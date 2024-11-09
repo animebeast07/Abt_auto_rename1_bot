@@ -224,7 +224,7 @@ async def auto_rename_files(client, message):
             if metadata:
 
                 await download_msg.edit("I Found Your Metadata🔥\n\n__Please Wait...__\n`Adding Metadata ⚡...`")
-                cmd = f"""ffmpeg -y -i "{path}" {metadata} -c:a libopus -b:a 35k "{metadata_path}" """
+                cmd = f"""ffmpeg -y -i "{path}" {metadata} -c:a copy "{metadata_path}" """
 
 
                 process = await asyncio.create_subprocess_shell(
