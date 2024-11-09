@@ -279,7 +279,7 @@ async def auto_rename_files(client, message):
             ph_path1 = await client.download_media(message.video.thumbs[0].file_id)
 
         if ph_path1:
-            Image.open(ph_path).convert("RGB").save(ph_path1)
+            Image.open(ph_path1).convert("RGB").save(ph_path1)
             img = Image.open(ph_path1)
             img.resize((320, 320))
             img.save(ph_path1, "JPEG")    
