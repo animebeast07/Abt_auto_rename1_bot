@@ -1,5 +1,6 @@
 from pyrogram import Client, filters 
 from helper.database import madflixbotz
+from pyrogram.types import Message
 
 @Client.on_message(filters.private & filters.command('set_caption'))
 async def add_caption(client, message):
@@ -38,18 +39,40 @@ async def viewthumb(client, message):
 async def removethumb(client, message):
     await madflixbotz.set_thumbnail(message.from_user.id, file_id=None)
     await message.reply_text("**Thumbnail Deleted Successfully 🗑️**")
-	
+
+
 @Client.on_message(filters.private & filters.command('thumb'))
-async def addthumbs(client, message):
-    mkn = await message.reply_text("Please Wait ...")
-    await madflixbotz.set_thumbnail(message.from_user.id, file_id=message.photo.file_id)                
-    await mkn.edit("**Thumbnail 01 Saved Successfully ✅️**")
+async def addthumbs(client: Client, message: Message):
+    # Check if the command is used as a reply to an image
+    if message.reply_to_message and message.reply_to_message.photo:
+        mkn = await message.reply_text("Please wait ...")
+        
+        # Get the file ID of the replied image
+        file_id = message.reply_to_message.photo.file_id
+        
+        # Set the thumbnail using your method
+        await madflixbotz.set_thumbnail(message.from_user.id, file_id=file_id)
+        
+        await mkn.edit("**Thumbnail 01 saved successfully ✅️**")
+    else:
+        await message.reply_text("Please reply to an image with /thumb to set it as the thumbnail.")
 
 @Client.on_message(filters.private & filters.command('thumb1'))
-async def addthumb(client, message):
-    mkn = await message.reply_text("Please Wait ...")
-    await madflixbotz.set_thumbnail1(message.from_user.id, file_id=message.photo.file_id)                
-    await mkn.edit("**Thumbnail 02 Saved Successfully ✅️**")
+async def addthumb(client: Client, message: Message):
+    # Check if the command is used as a reply to an image
+    if message.reply_to_message and message.reply_to_message.photo:
+        mkn = await message.reply_text("Please wait ...")
+        
+        # Get the file ID of the replied image
+        file_id = message.reply_to_message.photo.file_id
+        
+        # Set the thumbnail using your method
+        await madflixbotz.set_thumbnail1(message.from_user.id, file_id=file_id)
+        
+        await mkn.edit("**Thumbnail 02 saved successfully ✅️**")
+    else:
+        await message.reply_text("Please reply to an image with /thumb to set it as the thumbnail.")
+
 
 
 
