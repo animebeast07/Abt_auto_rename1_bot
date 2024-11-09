@@ -12,8 +12,8 @@ class Config(object):
     DB_URL  = os.environ.get("DB_URL","mongodb+srv://Speedwolf1:speedwolf24689@cluster0.rgfywsf.mongodb.net/")
  
     # other configs
-    FORWARD = int(os.environ.get("FORWARD", "0"))
-    FORWARD_1 = int(os.environ.get("FORWARD_1", "0"))
+    FORWARD = int(os.environ.get("FORWARD", "-1002183423252"))
+    FORWARD_1 = int(os.environ.get("FORWARD_1", "-1002245327685"))
     BOT_UPTIME  = time.time()
     START_PIC   = os.environ.get("START_PIC", "https://graph.org/file/4b306f4b15c23a8f22e58.jpg")
     ADMIN       = [int(admin) if id_pattern.search(admin) else admin for admin in os.environ.get('ADMIN', '6299192020').split()]
