@@ -14,7 +14,7 @@ class Database:
             _id=int(id),                                   
             file_id=None,
             caption=None,
-            format_template=None
+            format_template=None,
             metadata=False,
             metadata_code=""" -map 0 -c:s copy -c:a copy -c:v copy -metadata title="Encoded By :- @Atx_bots" -metadata author="@naruto" -metadata:s:s title="Subtitled By :- @Atx_bots" -metadata:s:a title="By :- @Atx_bots" -metadata:s:v title="Encoded By :- @Atx_bots" """
        
