@@ -136,6 +136,20 @@ filename = "Naruto Shippuden S01 - EP07 - 1080p [Dual Audio] @Madflix_Bots.mkv"
 episode_number = extract_episode_number(filename)
 print(f"Extracted Episode Number: {episode_number}")
 
+def generate_caption(filename):
+    episode_number = extract_episode_number(filename)
+    quality = extract_quality(filename)
+    anime_name = "Naruto Shippuden"  # You can further customize this to extract anime names dynamically
+
+    # Generate caption using detected details
+    if episode_number and quality:
+        caption = f"{anime_name}-Ep:{episode_number} - {quality}[Tamil]@Anime_Tamil_Xyz"
+    else:
+        # Fallback caption if details aren't fully detected
+        caption = f"🎬 **{anime_name}** - Episode info not fully detected.\n📥 Watch in Tamil [@Anime_Tamil_Xyz]"
+
+    return caption
+
 # Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
@@ -292,7 +306,7 @@ async def auto_rename_files(client, message):
                     chat_id=Config.FORWARD,
                     document=metadata_path if _bool_metadata else file_path,
                     thumb=ph_path,
-                    caption=caption,
+                    caption=generate_caption(file_name),
                     progress=progress_for_pyrogram,
                     progress_args=("Upload Started.....", upload_msg, time.time())
                 )
@@ -308,7 +322,7 @@ async def auto_rename_files(client, message):
                 await client.send_document(
                     chat_id=Config.FORWARD,
                     document=metadata_path if _bool_metadata else file_path,
-                    caption=caption,
+                    caption=generate_caption(file_name),
                     thumb=ph_path,           
                     progress=progress_for_pyrogram,
                     progress_args=("Upload Started.....", upload_msg, time.time())
