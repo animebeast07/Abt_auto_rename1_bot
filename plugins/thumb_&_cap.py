@@ -39,13 +39,13 @@ async def removethumb(client, message):
     await madflixbotz.set_thumbnail(message.from_user.id, file_id=None)
     await message.reply_text("**Thumbnail Deleted Successfully 🗑️**")
 	
-@Client.on_message(filters.private & filters.command(thumb))
+@Client.on_message(filters.private & filters.command('thumb'))
 async def addthumbs(client, message):
     mkn = await message.reply_text("Please Wait ...")
     await madflixbotz.set_thumbnail(message.from_user.id, file_id=message.photo.file_id)                
     await mkn.edit("**Thumbnail 01 Saved Successfully ✅️**")
 
-@Client.on_message(filters.private & filters.command(thumb1))
+@Client.on_message(filters.private & filters.command('thumb1'))
 async def addthumb(client, message):
     mkn = await message.reply_text("Please Wait ...")
     await madflixbotz.set_thumbnail1(message.from_user.id, file_id=message.photo.file_id)                
