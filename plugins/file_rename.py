@@ -253,8 +253,10 @@ async def auto_rename_files(client, message):
 
         upload_msg = await download_msg.edit("Trying To Uploading.....")
         ph_path = None
+        ph_path1 = None 
         c_caption = await madflixbotz.get_caption(message.chat.id)
         c_thumb = await madflixbotz.get_thumbnail(message.chat.id)
+        c_thumb1 = await madflixbotz.get_thumbnail1(message.chat.id)
 
         caption = c_caption.format(filename=new_file_name, filesize=humanbytes(message.document.file_size), duration=convert(duration)) if c_caption else f"**{new_file_name}**"
 
@@ -268,26 +270,54 @@ async def auto_rename_files(client, message):
             Image.open(ph_path).convert("RGB").save(ph_path)
             img = Image.open(ph_path)
             img.resize((320, 320))
-            img.save(ph_path, "JPEG")    
+            img.save(ph_path, "JPEG") 
+            
+        if c_thumb1:
+            ph_path1 = await client.download_media(c_thumb1)
+            print(f"Thumbnail downloaded successfully. Path: {ph_path1}")
+        elif media_type == "video" and message.video.thumbs:
+            ph_path1 = await client.download_media(message.video.thumbs[0].file_id)
+
+        if ph_path1:
+            Image.open(ph_path).convert("RGB").save(ph_path1)
+            img = Image.open(ph_path1)
+            img.resize((320, 320))
+            img.save(ph_path1, "JPEG")    
         
 
         try:
             type = media_type  # Use 'media_type' variable instead
             if type == "document":
                 await client.send_document(
-                    message.chat.id,
+                    message.chat.id=Config.FORWARD,
                     document=metadata_path if _bool_metadata else file_path,
                     thumb=ph_path,
                     caption=caption,
                     progress=progress_for_pyrogram,
                     progress_args=("Upload Started.....", upload_msg, time.time())
                 )
+                await client.send_document(
+                    message.chat.id=Config.FORWARD_1,
+                    document=file_path,
+                    thumb=ph_path1,
+                    caption=caption,
+                    progress=progress_for_pyrogram,
+                    progress_args=("Upload Started.....", upload_msg, time.time())
+                )
             elif type == "video":
                 await client.send_document(
-                    message.chat.id,
+                    message.chat.id=Config.FORWARD,
                     document=metadata_path if _bool_metadata else file_path,
                     caption=caption,
                     thumb=ph_path,           
+                    progress=progress_for_pyrogram,
+                    progress_args=("Upload Started.....", upload_msg, time.time())
+                )
+                await client.send_document(
+                    message.chat.id=Config.FORWARD_1,
+                    document=file_path,
+                    thumb=ph_path1,
+                    caption=caption,
                     progress=progress_for_pyrogram,
                     progress_args=("Upload Started.....", upload_msg, time.time())
                 )
@@ -307,6 +337,10 @@ async def auto_rename_files(client, message):
                 os.remove(ph_path)
             if metadata_path:
                 os.remove(metadata_path)
+            if ph_path1:
+                os.remove(ph_path1)
+            if metadata_path:
+                os.remove(metadata_path)
             # Mark the file as ignored
             return await upload_msg.edit(f"Error: {e}")
 
@@ -314,6 +348,8 @@ async def auto_rename_files(client, message):
         os.remove(file_path)
         if ph_path:
             os.remove(ph_path)
+        if ph_path1:
+            os.remove(ph_path1)
         if metadata_path:
             os.remove(metadata_path)
 
