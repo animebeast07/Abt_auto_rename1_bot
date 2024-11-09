@@ -71,12 +71,14 @@ class Database:
         return user.get('media_type', None)
         
     async def set_thumbnail1(self, id, file_id):
-        await self.col.update_one({'_id': int(id)}, {'$set': {'file_id': file_id}})
+        await self.col.update_one({'_id': int(id)}, {'$set': {'file_id_1': file_id}})
 
     async def get_thumbnail1(self, id):
         user = await self.col.find_one({'_id': int(id)})
-        return user.get('file_id', None)
-
+        return user.get('file_id_1', None)
+    
+  
+    
     #======================= Metadata ========================#
         
     async def set_metadata(self, id, bool_meta):
