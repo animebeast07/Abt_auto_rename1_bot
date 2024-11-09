@@ -69,6 +69,13 @@ class Database:
     async def get_media_preference(self, id):
         user = await self.col.find_one({'_id': int(id)})
         return user.get('media_type', None)
+        
+    async def set_thumbnail1(self, id, file_id):
+        await self.col.update_one({'_id': int(id)}, {'$set': {'file_id': file_id}})
+
+    async def get_thumbnail1(self, id):
+        user = await self.col.find_one({'_id': int(id)})
+        return user.get('file_id', None)
 
     #======================= Metadata ========================#
         
