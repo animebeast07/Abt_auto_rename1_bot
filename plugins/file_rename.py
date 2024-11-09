@@ -286,8 +286,7 @@ async def auto_rename_files(client, message):
                     message.chat.id,
                     document=metadata_path if _bool_metadata else file_path,
                     caption=caption,
-                    thumb=ph_path,
-                    duration=duration,
+                    thumb=ph_path,           
                     progress=progress_for_pyrogram,
                     progress_args=("Upload Started.....", upload_msg, time.time())
                 )
