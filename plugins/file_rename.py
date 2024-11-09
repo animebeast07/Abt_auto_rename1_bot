@@ -289,7 +289,7 @@ async def auto_rename_files(client, message):
             type = media_type  # Use 'media_type' variable instead
             if type == "document":
                 await client.send_document(
-                    message.chat.id=Config.FORWARD,
+                    chat_id=Config.FORWARD,
                     document=metadata_path if _bool_metadata else file_path,
                     thumb=ph_path,
                     caption=caption,
@@ -297,7 +297,7 @@ async def auto_rename_files(client, message):
                     progress_args=("Upload Started.....", upload_msg, time.time())
                 )
                 await client.send_document(
-                    message.chat.id=Config.FORWARD_1,
+                    chat_id=Config.FORWARD_1,
                     document=file_path,
                     thumb=ph_path1,
                     caption=caption,
@@ -306,7 +306,7 @@ async def auto_rename_files(client, message):
                 )
             elif type == "video":
                 await client.send_document(
-                    message.chat.id=Config.FORWARD,
+                    chat_id=Config.FORWARD,
                     document=metadata_path if _bool_metadata else file_path,
                     caption=caption,
                     thumb=ph_path,           
@@ -314,7 +314,7 @@ async def auto_rename_files(client, message):
                     progress_args=("Upload Started.....", upload_msg, time.time())
                 )
                 await client.send_document(
-                    message.chat.id=Config.FORWARD_1,
+                    chat_id=Config.FORWARD_1,
                     document=file_path,
                     thumb=ph_path1,
                     caption=caption,
