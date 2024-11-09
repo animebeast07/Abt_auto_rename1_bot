@@ -7,7 +7,7 @@ from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 from helper.utils import progress_for_pyrogram, humanbytes, convert
 from helper.database import madflixbotz
-from config import Config
+from config import Config, Txt
 import os
 import time
 import re
@@ -198,7 +198,10 @@ async def auto_rename_files(client, message):
                     return  # Exit the handler if quality extraction fails
                 
                 format_template = format_template.replace(quality_placeholder, "".join(extracted_qualities))           
-            
+       
+        if not os.path.isdir("Metadata"):
+            os.mkdir("Metadata")   
+        
         _, file_extension = os.path.splitext(file_name)
         new_file_name = f"{format_template}{file_extension}"
         file_path = f"downloads/{new_file_name}"
@@ -212,6 +215,32 @@ async def auto_rename_files(client, message):
             del renaming_operations[file_id]
             return await download_msg.edit(e)     
 
+        _bool_metadata = await madflixbotz.get_metadata(message.chat.id)  
+    
+        if (_bool_metadata):
+            metadata_path = f"Metadata/{new_file_name}"
+            metadata = await madflixbotz.get_metadata_code(message.chat.id)
+            if metadata:
+
+                await download_msg.edit("I Found Your Metadata🔥\n\n__Please Wait...__\n`Adding Metadata ⚡...`")
+                cmd = f"""ffmpeg -y -i "{path}" {metadata} "{metadata_path}" """
+
+                process = await asyncio.create_subprocess_shell(
+                    cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+                )
+
+                stdout, stderr = await process.communicate()
+                er = stderr.decode()
+
+                try:
+                    if er:
+                        return await download_msg.edit(str(er) + "\n\n**Error**")
+                except BaseException:
+                    pass
+            await download_msg.edit("**Metadata Added To The File Successfully ✅**\n\n__**Please Wait...**__\n\n`😈Trying To Downloading`")
+        else:
+            await download_msg.edit("`😈Trying To Downloading`") 
+        
         duration = 0
         try:
             metadata = extractMetadata(createParser(file_path))
@@ -245,16 +274,16 @@ async def auto_rename_files(client, message):
             if type == "document":
                 await client.send_document(
                     message.chat.id,
-                    document=file_path,
+                    document=metadata_path if _bool_metadata else file_path,
                     thumb=ph_path,
                     caption=caption,
                     progress=progress_for_pyrogram,
                     progress_args=("Upload Started.....", upload_msg, time.time())
                 )
             elif type == "video":
-                await client.send_video(
+                await client.send_document(
                     message.chat.id,
-                    video=file_path,
+                    document=metadata_path if _bool_metadata else file_path,
                     caption=caption,
                     thumb=ph_path,
                     duration=duration,
@@ -264,7 +293,7 @@ async def auto_rename_files(client, message):
             elif type == "audio":
                 await client.send_audio(
                     message.chat.id,
-                    audio=file_path,
+                    audio=metadata_path if _bool_metadata else file_path,
                     caption=caption,
                     thumb=ph_path,
                     duration=duration,
@@ -275,6 +304,8 @@ async def auto_rename_files(client, message):
             os.remove(file_path)
             if ph_path:
                 os.remove(ph_path)
+            if metadata_path:
+                os.remove(metadata_path)
             # Mark the file as ignored
             return await upload_msg.edit(f"Error: {e}")
 
@@ -282,6 +313,8 @@ async def auto_rename_files(client, message):
         os.remove(file_path)
         if ph_path:
             os.remove(ph_path)
+        if metadata_path:
+            os.remove(metadata_path)
 
 # Remove the entry from renaming_operations after successful renaming
         del renaming_operations[file_id]
